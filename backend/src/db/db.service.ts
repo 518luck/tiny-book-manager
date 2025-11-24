@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { type DbModuleOptions } from '@/db/db.module';
-import { access, readFile } from 'fs/promises';
+import { access, readFile, writeFile } from 'fs/promises';
 
 @Injectable()
 export class DbService {
@@ -25,6 +25,13 @@ export class DbService {
       return [];
     }
 
-    return JSON.parse(str);
+    const data: unknown = JSON.parse(str); // any → unknown
+    return data;
+  }
+
+  async write(obj: Record<string, any>) {
+    await writeFile(this.options.path, JSON.stringify(obj || []), {
+      encoding: 'utf-8',
+    });
   }
 }
