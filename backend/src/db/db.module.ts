@@ -11,7 +11,7 @@ export class DbModule {
       module: DbModule,
       providers: [
         {
-          provide: 'DB_OPTIONS',
+          provide: 'OPTIONS',
           useValue: options,
         },
         DbService,
