@@ -3,10 +3,11 @@ import { CreateBookDto } from '@/book/dto/create-book.dto';
 import { UpdateBookDto } from '@/book/dto/update-book.dto';
 import { DbService } from '@/db/db.service';
 import { Book } from '@/book/entities/book.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class BookService {
-  @Inject('DbService')
+  @Inject(DbService)
   private readonly dbService: DbService;
 
   private async getBooksData(): Promise<Book[]> {
@@ -19,7 +20,7 @@ export class BookService {
     return books;
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     const books: Book[] = await this.getBooksData();
     const book = books.find((item) => item.id === id);
     if (!book) {
@@ -32,7 +33,7 @@ export class BookService {
     const books: Book[] = await this.getBooksData();
 
     const book = new Book();
-    book.id = books.length + 1;
+    book.id = uuidv4();
     book.author = createBookDto.author;
     book.name = createBookDto.name;
     book.description = createBookDto.description;
@@ -62,7 +63,7 @@ export class BookService {
     return foundBook;
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     const books: Book[] = await this.getBooksData();
 
     const foundBook = books.find((item) => item.id === id);

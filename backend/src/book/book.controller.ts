@@ -22,7 +22,7 @@ export class BookController {
 
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return this.bookService.findById(+id);
+    return this.bookService.findById(id);
   }
 
   @Post('create')
@@ -37,6 +37,6 @@ export class BookController {
 
   @Delete('delete/:id')
   async delete(@Param('id') id: string) {
-    return this.bookService.delete(+id);
+    return this.bookService.delete(id);
   }
 }
