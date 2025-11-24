@@ -7,10 +7,10 @@ import { LoginUserDto } from '@/user/dto/login-user.dto';
 @Injectable()
 export class UserService {
   @Inject(DbService)
-  private dbService: DbService;
+  private readonly dbService: DbService;
 
   async register(registerUserDto: RegisterUserDto) {
-    const users: User[] = await this.dbService.read();
+    const users: User[] = (await this.dbService.read()) as User[];
 
     const foundUser = users.find(
       (item) => item.username === registerUserDto.username,
@@ -33,7 +33,7 @@ export class UserService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    const users: User[] = await this.dbService.read();
+    const users: User[] = (await this.dbService.read()) as User[];
 
     if (!users) {
       throw new BadRequestException('用户不存在');
