@@ -1,8 +1,14 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
+import { UserService } from '@/user/user.service';
+import { UserController } from '@/user/user.controller';
+import { DbModule } from '@/db/db.module';
 
 @Module({
+  imports: [
+    DbModule.register({
+      path: 'users.json',
+    }),
+  ],
   controllers: [UserController],
   providers: [UserService],
 })
