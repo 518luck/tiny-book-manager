@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { type DbModuleOptions } from '@/db/db.module';
 import { access, readFile, writeFile } from 'fs/promises';
+import { User } from '@/user/entities/user.entity';
 
 @Injectable()
 export class DbService {
@@ -25,8 +26,8 @@ export class DbService {
       return [];
     }
 
-    const data: unknown = JSON.parse(str); // any → unknown
-    return data;
+    // JSON.parse可能会解析出来乱七八糟,我也不知道怎么解决,所以我这里用as断言一下
+    return JSON.parse(str) as User[];
   }
 
   async write(obj: Record<string, any>) {

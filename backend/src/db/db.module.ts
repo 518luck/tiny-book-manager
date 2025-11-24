@@ -11,6 +11,7 @@ export class DbModule {
       module: DbModule,
       providers: [
         {
+          //Injection Token
           provide: 'OPTIONS',
           useValue: options,
         },
