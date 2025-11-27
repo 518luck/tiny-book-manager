@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LockKeyhole, LockOpen, Mail } from "lucide-react";
+import { Library, LockKeyhole, LockOpen, Mail } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -35,10 +35,13 @@ const Login = () => {
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-[#575758]">
-      <main className="flex h-[80%] w-[80%] bg-[#030303]">
+      <main className="flex h-[76%] w-[80%] bg-[#030303]">
         {/* 表单录入 */}
         <section className="flex h-full flex-35 flex-col items-center justify-around bg-[#030303] text-white">
-          <div className="w-2/3">测试</div>
+          <div className="flex w-2/3 items-end justify-start">
+            <Library className="mr-1 h-8 w-8" />
+            <p>图书馆</p>
+          </div>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -102,7 +105,13 @@ const Login = () => {
         </section>
 
         {/* 图片展示 */}
-        <section className="h-full flex-65 bg-[#463737]"></section>
+        <section className="h-full flex-65 bg-[#463737]">
+          <img
+            src="/imgs/bookshelf.png"
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        </section>
       </main>
     </div>
   );
