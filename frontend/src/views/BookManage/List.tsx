@@ -1,6 +1,10 @@
-import LeftSidebar from "@/views/BookManage/LeftSidebar";
+import { ArrowBigRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
+import LeftSidebar from "@/views/BookManage/LeftSidebar";
 const BookList = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-[#575758] text-stone-300">
       <main className="flex h-[76%] w-[80%] bg-gray-800">
@@ -10,7 +14,12 @@ const BookList = () => {
         </div>
 
         {/* 右侧内容区域 */}
-        <main>图书</main>
+        <main className="w-full">
+          <div className="flex h-7 cursor-pointer justify-end bg-amber-200">
+            <ArrowBigRight onClick={() => navigate(-1)} />
+          </div>
+          图书
+        </main>
       </main>
     </div>
   );
