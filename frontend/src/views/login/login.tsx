@@ -45,7 +45,13 @@ const Login = () => {
     <div className="flex h-screen w-screen items-center justify-center bg-[#575758]">
       <main className="flex h-[76%] w-[80%] bg-[#030303]">
         {/* 表单录入 */}
-        <section className="flex h-full flex-35 flex-col items-center justify-around bg-[#030303] text-white">
+        {/* <section className="flex h-full flex-35 flex-col items-center justify-around bg-[#030303] text-white"> */}
+        <section
+          className={clsx(
+            "flex h-full flex-col items-center justify-around bg-[#030303] text-white transition-all duration-500",
+            vanish ? "w-full" : "w-[35%]",
+          )}
+        >
           <div className="flex w-2/3 items-end justify-start">
             <Library className="mr-1 h-8 w-8" />
             <p>图书馆</p>
