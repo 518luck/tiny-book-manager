@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Library, LockKeyhole, LockOpen, Mail } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +17,7 @@ import {
 } from "@/views/login/schemas/login-schema";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
   const {
     register,
@@ -31,6 +33,7 @@ const Login = () => {
 
   const onSubmit = (data: LoginSchemaType) => {
     console.log(data);
+    navigate("/book-manage");
   };
 
   return (
