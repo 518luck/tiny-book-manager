@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import clsx from "clsx";
 import { Library, LockKeyhole, LockOpen, Mail } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -31,9 +32,13 @@ const Login = () => {
     },
   });
 
+  const [vanish, setVanish] = useState(false);
+  const [hidden, setHidden] = useState(false);
+
   const onSubmit = (data: LoginSchemaType) => {
     console.log(data);
-    navigate("/book-manage");
+    // navigate("/book-manage");
+    setVanish(true);
   };
 
   return (
@@ -51,55 +56,66 @@ const Login = () => {
             className="flex w-2/3 flex-col gap-6"
           >
             <p className="text-3xl">Sign In</p>
-            {/* 账号 */}
-            <div className="flex flex-col gap-1">
-              <InputGroupText className="text-stone-300">
-                User Username
-              </InputGroupText>
-              <InputGroup className="h-12">
-                <InputGroupInput
-                  placeholder="Enter Username"
-                  {...register("username")}
-                />
-                <InputGroupAddon>
-                  <Mail />
-                </InputGroupAddon>
-              </InputGroup>
-              {errors.username && (
-                <p className="text-sm text-red-500">
-                  {errors.username.message}
-                </p>
-              )}
-            </div>
-            {/* 密码 */}
-            <div className="flex flex-col gap-1">
-              <InputGroupText className="text-stone-300">
-                Password
-              </InputGroupText>
-              <InputGroup className="h-12">
-                <InputGroupInput
-                  type={isShowPassword ? "text" : "password"}
-                  placeholder="Enter Password"
-                  {...register("password")}
-                />
-                <InputGroupAddon
-                  onClick={() => setIsShowPassword(!isShowPassword)}
-                  className="cursor-pointer"
-                >
-                  {isShowPassword ? <LockKeyhole /> : <LockOpen />}
-                </InputGroupAddon>
-              </InputGroup>
-              {errors.password && (
-                <p className="text-sm text-red-500">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
+            {!hidden && (
+              <div
+                className={clsx(
+                  "flex flex-col gap-6 transition-all duration-500",
+                  vanish
+                    ? "pointer-events-none translate-y-20 opacity-0"
+                    : "translate-y-0 opacity-100",
+                )}
+                onTransitionEnd={() => setHidden(vanish)}
+              >
+                <div className="flex flex-col gap-1">
+                  <InputGroupText className="text-stone-300">
+                    User Username
+                  </InputGroupText>
+                  <InputGroup className="h-12">
+                    <InputGroupInput
+                      placeholder="Enter Username"
+                      {...register("username")}
+                    />
+                    <InputGroupAddon>
+                      <Mail />
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {errors.username && (
+                    <p className="text-sm text-red-500">
+                      {errors.username.message}
+                    </p>
+                  )}
+                </div>
 
-            {/* 登录按钮 */}
-            <Button type="submit" className="w-full">
-              Sign In
-            </Button>
+                <div className="flex flex-col gap-1">
+                  <InputGroupText className="text-stone-300">
+                    Password
+                  </InputGroupText>
+                  <InputGroup className="h-12">
+                    <InputGroupInput
+                      type={isShowPassword ? "text" : "password"}
+                      placeholder="Enter Password"
+                      {...register("password")}
+                    />
+                    <InputGroupAddon
+                      onClick={() => setIsShowPassword(!isShowPassword)}
+                      className="cursor-pointer"
+                    >
+                      {isShowPassword ? <LockKeyhole /> : <LockOpen />}
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {errors.password && (
+                    <p className="text-sm text-red-500">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 登录按钮 */}
+                <Button type="submit" className="w-full">
+                  Sign In
+                </Button>
+              </div>
+            )}
           </form>
 
           <div className="w-2/3 text-sm text-stone-300">
