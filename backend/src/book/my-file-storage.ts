@@ -1,15 +1,11 @@
-import * as multer from 'multer';
+import multer from 'multer';
 import * as fs from 'fs';
 
 //multer.diskStorage 创建一个 DiskStorage 引擎，告诉 multer “把文件存到磁盘，并由我们指定保存目录和文件名的逻辑”。
 const storage = multer.diskStorage({
   //diskStorage 接受一个对象，这个对象必须实现两个回调：destination（目标目录）和 filename（生成保存用的文件名）。
   destination: function (req, file, cb) {
-    try {
-      fs.mkdirSync('uploads');
-    } catch (error) {
-      console.error(error);
-    }
+    fs.mkdirSync('uploads', { recursive: true });
     //意思是“没有错误（null），目标路径是 'uploads'”。
     cb(null, 'uploads');
   },
