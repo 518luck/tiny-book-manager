@@ -37,29 +37,30 @@ const Login = () => {
 
   const onSubmit = (data: LoginSchemaType) => {
     console.log(data);
-    // navigate("/book-manage");
     setVanish(true);
+    // navigate("/book-manage");
   };
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-[#575758]">
       <main className="flex h-[76%] w-[80%] bg-[#030303]">
         {/* 表单录入 */}
-        {/* <section className="flex h-full flex-35 flex-col items-center justify-around bg-[#030303] text-white"> */}
         <section
           className={clsx(
-            "flex h-full flex-col items-center justify-around bg-[#030303] text-white transition-all duration-500",
-            vanish ? "w-full" : "w-[35%]",
+            "flex h-full flex-col items-center justify-around bg-[#030303] text-white transition-all duration-700",
+            vanish ? "w-full" : "w-[380px]",
           )}
         >
-          <div className="flex w-2/3 items-end justify-start">
-            <Library className="mr-1 h-8 w-8" />
-            <p>图书馆</p>
-          </div>
+          {!hidden && (
+            <div className="flex w-2/3 items-end justify-start">
+              <Library className="mr-1 h-8 w-8" />
+              <p>图书馆</p>
+            </div>
+          )}
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex w-2/3 flex-col gap-6"
+            className="flex flex-col gap-6"
           >
             <p className="text-3xl">Sign In</p>
             {!hidden && (
@@ -67,10 +68,15 @@ const Login = () => {
                 className={clsx(
                   "flex flex-col gap-6 transition-all duration-500",
                   vanish
-                    ? "pointer-events-none translate-y-20 opacity-0"
+                    ? "pointer-events-none translate-y-50 opacity-0"
                     : "translate-y-0 opacity-100",
                 )}
-                onTransitionEnd={() => setHidden(vanish)}
+                onTransitionEnd={(e) => {
+                  if (e.target !== e.currentTarget) return;
+                  if (!vanish) return;
+                  setHidden(vanish);
+                  navigate("/book-manage");
+                }}
               >
                 <div className="flex flex-col gap-1">
                   <InputGroupText className="text-stone-300">
@@ -124,9 +130,11 @@ const Login = () => {
             )}
           </form>
 
-          <div className="w-2/3 text-sm text-stone-300">
-            Dot't have an account? Sign up
-          </div>
+          {!hidden && (
+            <div className="w-2/3 text-sm text-stone-300">
+              Dot't have an account? Sign up
+            </div>
+          )}
         </section>
 
         {/* 图片展示 */}
