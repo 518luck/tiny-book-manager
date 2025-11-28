@@ -22,11 +22,9 @@ export const useLoginMutation = (
   AxiosError<LoginResponse>,
   LoginRequest
 > => {
-  const { onSuccess, onError, ...restOptions } = options || {};
+  const { ...restOptions } = options || {};
   return useMutation({
     mutationFn: (data) => loginApi(data),
-    onSuccess,
-    onError,
     ...restOptions,
   });
 };

@@ -4,7 +4,9 @@ import { Library, LockKeyhole, LockOpen, Mail } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
+import { useLoginMutation } from "@/apis/hooks/login";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -16,10 +18,18 @@ import {
   loginSchema,
   type LoginSchemaType,
 } from "@/views/login/schemas/login-schema";
-
 const Login = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const { mutateAsync: loginMutateAsync } = useLoginMutation({
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "登录失败");
+    },
+    onSuccess: () => {
+      toast.success("登录成功");
+      navigate("/book-manage");
+    },
+  });
   const {
     register,
     handleSubmit,
@@ -35,10 +45,11 @@ const Login = () => {
   const [vanish, setVanish] = useState(false);
   const [hidden, setHidden] = useState(false);
 
-  const onSubmit = (data: LoginSchemaType) => {
+  const onSubmit = async (data: LoginSchemaType) => {
     console.log(data);
     setVanish(true);
-    // navigate("/book-manage");
+    const isValid = await loginMutateAsync(data);
+    console.log("🚀 ~ onSubmit ~ isValid:", isValid);
   };
 
   return (
@@ -75,7 +86,7 @@ const Login = () => {
                   if (e.target !== e.currentTarget) return;
                   if (!vanish) return;
                   setHidden(vanish);
-                  navigate("/book-manage");
+                  // navigate("/book-manage");
                 }}
               >
                 <div className="flex flex-col gap-1">

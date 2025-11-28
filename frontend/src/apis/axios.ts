@@ -7,7 +7,7 @@ import axios, {
 
 // 创建 axios 实例
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, // 你的后端接口基础地址
+  baseURL: "/api", // 你的后端接口基础地址
   timeout: 10000, // 超时时间 10 秒
   headers: {
     "Content-Type": "application/json",
