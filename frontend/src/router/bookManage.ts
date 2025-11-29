@@ -4,7 +4,7 @@ export const bookManageRoutes: RouteObject[] = [
   {
     path: "/book-manage",
     lazy: async () => {
-      const module = await import("@/views/BookManage/List");
+      const module = await import("@/views/BookManage/Library");
       return { Component: module.default };
     },
   },

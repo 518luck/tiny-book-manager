@@ -1,8 +1,9 @@
 import { CircleUser } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import Books from "@/views/BookManage/Books";
 import LeftSidebar from "@/views/BookManage/LeftSidebar";
-const BookList = () => {
+const Library = () => {
   const navigate = useNavigate();
 
   return (
@@ -18,11 +19,13 @@ const BookList = () => {
           <div className="flex h-11 cursor-pointer justify-end border-l border-[#333333] bg-gray-950 p-2">
             <CircleUser onClick={() => navigate("/")} />
           </div>
-          <section></section>
+          <section>
+            <Books />
+          </section>
         </main>
       </main>
     </div>
   );
 };
 
-export default BookList;
+export default Library;
