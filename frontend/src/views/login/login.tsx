@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { Library, LockKeyhole, LockOpen, Mail } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -20,14 +20,25 @@ import {
 } from "@/views/login/schemas/login-schema";
 const Login = () => {
   const navigate = useNavigate();
+  //动画动态
+  const [isAPISuccess, setIsAPISuccess] = useState(false);
+  const [isAnimationSuccess, setIsAnimationSuccess] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [vanish, setVanish] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    if (!isAPISuccess) return;
+    if (!isAnimationSuccess) return;
+    navigate("/book-manage");
+  }, [isAPISuccess, isAnimationSuccess, navigate]);
   const { mutateAsync: loginMutateAsync } = useLoginMutation({
     onError: (error) => {
       toast.error(error.response?.data?.message || "登录失败");
     },
     onSuccess: () => {
       toast.success("登录成功");
-      navigate("/book-manage");
+      // navigate("/book-manage");
+      setIsAPISuccess(true);
     },
   });
   const {
@@ -41,9 +52,6 @@ const Login = () => {
       password: "",
     },
   });
-
-  const [vanish, setVanish] = useState(false);
-  const [hidden, setHidden] = useState(false);
 
   const onSubmit = async (data: LoginSchemaType) => {
     console.log(data);
@@ -61,6 +69,11 @@ const Login = () => {
             "flex h-full flex-col items-center justify-around bg-[#030303] text-white transition-all duration-700",
             vanish ? "w-full" : "w-[380px]",
           )}
+          onTransitionEnd={(e) => {
+            if (e.target !== e.currentTarget) return;
+            if (!vanish) return;
+            setIsAnimationSuccess(true);
+          }}
         >
           {!hidden && (
             <div className="flex w-2/3 items-end justify-start">
@@ -86,7 +99,6 @@ const Login = () => {
                   if (e.target !== e.currentTarget) return;
                   if (!vanish) return;
                   setHidden(vanish);
-                  // navigate("/book-manage");
                 }}
               >
                 <div className="flex flex-col gap-1">
@@ -142,7 +154,10 @@ const Login = () => {
           </form>
 
           {!hidden && (
-            <div className="w-2/3 text-sm text-stone-300">
+            <div
+              className="w-2/3 cursor-pointer text-sm text-stone-300 hover:text-blue-500"
+              onClick={() => navigate("/register")}
+            >
               Dot't have an account? Sign up
             </div>
           )}

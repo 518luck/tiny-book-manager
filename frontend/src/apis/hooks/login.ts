@@ -9,6 +9,9 @@ import {
   loginApi,
   type LoginRequest,
   type LoginResponse,
+  registerApi,
+  type RegisterRequest,
+  type RegisterResponse,
 } from "@/apis/https/login";
 
 export const useLoginMutation = (
@@ -25,6 +28,24 @@ export const useLoginMutation = (
   const { ...restOptions } = options || {};
   return useMutation({
     mutationFn: (data) => loginApi(data),
+    ...restOptions,
+  });
+};
+
+export const useRegisterMutation = (
+  options?: UseMutationOptions<
+    RegisterResponse,
+    AxiosError<RegisterResponse>,
+    RegisterRequest
+  >,
+): UseMutationResult<
+  RegisterResponse,
+  AxiosError<RegisterResponse>,
+  RegisterRequest
+> => {
+  const { ...restOptions } = options || {};
+  return useMutation({
+    mutationFn: (data) => registerApi(data),
     ...restOptions,
   });
 };
