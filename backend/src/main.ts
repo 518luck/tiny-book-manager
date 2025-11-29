@@ -8,6 +8,9 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.enableCors({
+    origin: '*', // 开发阶段全开放
+  });
 
   //来自 @nestjs/platform-express，用于注册静态资源目录。
   // “Nest，以后 /uploads 这个路径访问到的，就是我本地文件夹里的文件。”
