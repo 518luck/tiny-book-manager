@@ -1,7 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockKeyhole, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
+import { useRegisterMutation } from "@/apis/hooks/login";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -13,8 +15,8 @@ import {
   registerSchema,
   type RegisterSchemaType,
 } from "@/views/login/schemas/register.schema";
-
 const Login = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -27,6 +29,11 @@ const Login = () => {
       confirmPassword: "",
     },
   });
+  const { mutate: registerMutate } = useRegisterMutation({
+    onSuccess: () => {
+      navigate("/book-manage");
+    },
+  });
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-[#575758] text-stone-300">
       <main className="flex h-[76%] w-[80%] items-center justify-center bg-[#030303]">
@@ -34,7 +41,7 @@ const Login = () => {
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit((data) => {
-              console.log(data);
+              registerMutate(data);
             })();
           }}
           className="flex flex-col gap-4"
