@@ -2,11 +2,14 @@ import ColorThief from "colorthief";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import Modal from "@/views/BookManage/components/Modal";
 const { VITE_API_BASE_URL } = import.meta.env;
 const Book = () => {
   const imgRef = useRef<HTMLImageElement>(null);
   const [bgColor, setBgColor] = useState("transparent");
   const [textColor, setTextColor] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // 图片加载完成后获取背景颜色和反色
   useEffect(() => {
     const img = imgRef.current;
     if (!img) return;
@@ -38,37 +41,43 @@ const Book = () => {
     };
   }, []);
   return (
-    <div
-      style={{ background: bgColor, color: textColor }}
-      className="flex h-45 w-33 flex-col overflow-hidden border border-[#333333]"
-    >
-      <section className="min-h-0 w-full flex-1">
-        <img
-          ref={imgRef}
-          src={`${VITE_API_BASE_URL}/uploads/1764037520489-370086747-%E5%A4%B4%E5%83%8F.png`}
-          alt="book"
-          className="h-full w-full object-cover"
-          crossOrigin="anonymous"
-        />
-      </section>
-      <section className="w-full p-1 text-xs">
-        <div>red and black</div>
-        <div className="flex w-full items-center justify-end">
-          <div>作者 : luck</div>
-        </div>
-      </section>
-      <section className="flex items-center justify-between p-1 text-xs">
-        <Button className="h-4 w-8 rounded-[4px] bg-[#4299e1] text-white hover:bg-[#3182ce]">
-          更新
-        </Button>
-        <Button
-          className="h-4 w-8 rounded-[4px] hover:bg-[#da0a0a]"
-          variant="destructive"
-        >
-          删除
-        </Button>
-      </section>
-    </div>
+    <>
+      <div
+        style={{ background: bgColor, color: textColor }}
+        className="flex h-45 w-33 flex-col overflow-hidden border border-[#333333]"
+      >
+        <section className="min-h-0 w-full flex-1">
+          <img
+            ref={imgRef}
+            src={`${VITE_API_BASE_URL}/uploads/1764037520489-370086747-%E5%A4%B4%E5%83%8F.png`}
+            alt="book"
+            className="h-full w-full object-cover"
+            crossOrigin="anonymous"
+          />
+        </section>
+        <section className="w-full p-1 text-xs">
+          <div>red and black</div>
+          <div className="flex w-full items-center justify-end">
+            <div>作者 : luck</div>
+          </div>
+        </section>
+        <section className="flex items-center justify-between p-1 text-xs">
+          <Button
+            className="h-4 w-8 rounded-[4px] bg-[#4299e1] text-white hover:bg-[#3182ce]"
+            onClick={() => setIsModalOpen(true)}
+          >
+            更新
+          </Button>
+          <Button
+            className="h-4 w-8 rounded-[4px] hover:bg-[#da0a0a]"
+            variant="destructive"
+          >
+            删除
+          </Button>
+        </section>
+      </div>
+      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 };
 
