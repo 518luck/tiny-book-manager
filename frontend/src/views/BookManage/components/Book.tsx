@@ -1,5 +1,7 @@
 import ColorThief from "colorthief";
 import { useEffect, useRef, useState } from "react";
+
+import { Button } from "@/components/ui/button";
 const { VITE_API_BASE_URL } = import.meta.env;
 const Book = () => {
   const imgRef = useRef<HTMLImageElement>(null);
@@ -38,9 +40,9 @@ const Book = () => {
   return (
     <div
       style={{ background: bgColor, color: textColor }}
-      className="flex h-45 w-33 flex-col border border-[#333333]"
+      className="flex h-45 w-33 flex-col overflow-hidden border border-[#333333]"
     >
-      <section className="h-30 w-full">
+      <section className="min-h-0 w-full flex-1">
         <img
           ref={imgRef}
           src={`${VITE_API_BASE_URL}/uploads/1764037520489-370086747-%E5%A4%B4%E5%83%8F.png`}
@@ -49,8 +51,23 @@ const Book = () => {
           crossOrigin="anonymous"
         />
       </section>
-      <section>书名</section>
-      <section>操作</section>
+      <section className="w-full p-1 text-xs">
+        <div>red and black</div>
+        <div className="flex w-full items-center justify-end">
+          <div>作者 : luck</div>
+        </div>
+      </section>
+      <section className="flex items-center justify-between p-1 text-xs">
+        <Button className="h-4 w-8 rounded-[4px] bg-[#4299e1] text-white hover:bg-[#3182ce]">
+          更新
+        </Button>
+        <Button
+          className="h-4 w-8 rounded-[4px] hover:bg-[#da0a0a]"
+          variant="destructive"
+        >
+          删除
+        </Button>
+      </section>
     </div>
   );
 };
