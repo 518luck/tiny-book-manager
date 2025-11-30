@@ -2,7 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
+import {
+  useCreateBookMutation,
+  useUpdateBookMutation,
+  useUploadImageMutation,
+} from "@/apis/hooks/books";
 import { Button } from "@/components/ui/button";
 import {
   Dialog, //根容器，包裹整个弹窗逻辑，相当于 Modal
@@ -18,21 +24,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-import type { CreateBookSchemaType } from "../schemas/create-book-schemas";
-import { createBookSchema } from "../schemas/create-book-schemas";
+import type { CreateBookSchemaType } from "@/views/BookManage/schemas/create-book-schemas";
+import { createBookSchema } from "@/views/BookManage/schemas/create-book-schemas";
 interface ModalProps {
   open: boolean;
   onClose: () => void;
+  id?: string; //判断更新还是创建
 }
-import { toast } from "sonner";
-
-import {
-  useCreateBookMutation,
-  useUploadImageMutation,
-} from "@/apis/hooks/books";
-
-const Modal = ({ open, onClose }: ModalProps) => {
+const Modal = ({ open, onClose, id }: ModalProps) => {
   const {
     register,
     setValue,
@@ -52,6 +51,7 @@ const Modal = ({ open, onClose }: ModalProps) => {
   const [coverPreview, setCoverPreview] = useState<string | undefined>(
     undefined,
   );
+
   //创建书籍
   const { mutateAsync: createBookMutateAsync } = useCreateBookMutation({
     onError: (error) => {
@@ -62,6 +62,18 @@ const Modal = ({ open, onClose }: ModalProps) => {
       onClose();
     },
   });
+
+  //更新书籍
+  const { mutateAsync: updateBookMutateAsync } = useUpdateBookMutation({
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "更新书籍失败");
+    },
+    onSuccess: () => {
+      toast.success("更新书籍成功");
+      onClose();
+    },
+  });
+
   //上传图片
   const { mutateAsync: uploadImageMutateAsync } = useUploadImageMutation({
     onError: () => {
@@ -79,8 +91,13 @@ const Modal = ({ open, onClose }: ModalProps) => {
 
   const onSubmit = async () => {
     const newData = getValues();
-    console.log("🚀 ~ onSubmit ~ newData:", newData);
-    await createBookMutateAsync(newData);
+    if (id) {
+      //更新书籍
+      await updateBookMutateAsync({ id, ...newData });
+    } else {
+      //创建书籍
+      await createBookMutateAsync(newData);
+    }
   };
 
   return (
@@ -90,7 +107,7 @@ const Modal = ({ open, onClose }: ModalProps) => {
       {/* 弹窗内容 */}
       <DialogContent className="border border-[#333333] bg-[#333333] text-white">
         <DialogHeader>
-          <DialogTitle>新增书籍</DialogTitle>
+          <DialogTitle>{id ? "更新书籍" : "新增书籍"}</DialogTitle>
         </DialogHeader>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -143,14 +160,16 @@ const Modal = ({ open, onClose }: ModalProps) => {
               )}
             </div>
           </div>
-          <div className="flex items-center justify-start gap-10">
-            <label>书籍封面</label>
-            <img
-              src={`${VITE_API_BASE_URL}/uploads/1764037520489-370086747-%E5%A4%B4%E5%83%8F.png`}
-              alt="book"
-              className="h-20 w-15 object-cover"
-            />
-          </div>
+          {id && (
+            <div className="flex items-center justify-start gap-10">
+              <label>书籍封面</label>
+              <img
+                src={`${VITE_API_BASE_URL}/uploads/1764037520489-370086747-%E5%A4%B4%E5%83%8F.png`}
+                alt="book"
+                className="h-20 w-15 object-cover"
+              />
+            </div>
+          )}
           <div className="flex items-center justify-start gap-10">
             <div>上传封面</div>
             <div>
@@ -194,7 +213,7 @@ const Modal = ({ open, onClose }: ModalProps) => {
             <Button className="text-white" variant="link" onClick={onClose}>
               取消
             </Button>
-            <Button type="submit">确认</Button>
+            <Button type="submit">{id ? "更新书籍" : "新增书籍"}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

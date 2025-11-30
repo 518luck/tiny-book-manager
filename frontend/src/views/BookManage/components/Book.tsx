@@ -78,7 +78,11 @@ const Book = ({ book }: { book: CreateBookResponse }) => {
           </Button>
         </section>
       </div>
-      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        id={book.id}
+      />
     </>
   );
 };

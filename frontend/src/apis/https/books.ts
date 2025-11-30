@@ -35,3 +35,24 @@ export type GetBookListResponse = ErrorResponse & CreateBookResponse[];
 export const getBookListApi = (): Promise<GetBookListResponse> => {
   return service.get("/book/list");
 };
+
+// 修改书籍API
+export interface UpdateBookRequest {
+  id: string;
+  name?: string;
+  author?: string;
+  description?: string;
+  cover?: string;
+}
+export interface UpdateBookResponse extends ErrorResponse {
+  id: string;
+  name: string;
+  author: string;
+  description: string;
+  cover: string;
+}
+export const updateBookApi = (
+  data: UpdateBookRequest,
+): Promise<UpdateBookResponse> => {
+  return service.post("/book/update", data);
+};

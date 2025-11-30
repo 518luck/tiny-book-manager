@@ -11,6 +11,9 @@ import {
   type CreateBookRequest,
   type CreateBookResponse,
   getBookListApi,
+  updateBookApi,
+  type UpdateBookRequest,
+  type UpdateBookResponse,
   uploadImageApi,
 } from "@/apis/https/books";
 import { type ErrorResponse } from "@/types/errorResponse";
@@ -53,11 +56,29 @@ export const useUploadImageMutation = (
   });
 };
 // 获取书籍列表API
-
 export const useGetBookListMutation = (options = {}) => {
   return useQuery({
     queryKey: ["bookList"],
     queryFn: () => getBookListApi(),
     ...options,
+  });
+};
+
+// 修改书籍API
+export const useUpdateBookMutation = (
+  options?: UseMutationOptions<
+    UpdateBookResponse,
+    AxiosError<UpdateBookResponse>,
+    UpdateBookRequest
+  >,
+): UseMutationResult<
+  UpdateBookResponse,
+  AxiosError<UpdateBookResponse>,
+  UpdateBookRequest
+> => {
+  const { ...restOptions } = options || {};
+  return useMutation({
+    mutationFn: (data) => updateBookApi(data),
+    ...restOptions,
   });
 };
