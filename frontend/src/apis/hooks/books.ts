@@ -12,6 +12,8 @@ import {
   createBookApi,
   type CreateBookRequest,
   type CreateBookResponse,
+  deleteBookApi,
+  type DeleteBookResponse,
   getBookApi,
   getBookListApi,
   type GetBookResponse,
@@ -108,5 +110,29 @@ export const useGetBookQuery = (
     queryKey: ["book", id],
     queryFn: () => getBookApi(id),
     ...options,
+  });
+};
+
+// 删除书籍API
+export const useDeleteBookMutation = (
+  options?: UseMutationOptions<
+    DeleteBookResponse,
+    AxiosError<DeleteBookResponse>,
+    string
+  >,
+): UseMutationResult<
+  DeleteBookResponse,
+  AxiosError<DeleteBookResponse>,
+  string
+> => {
+  const { onSuccess, ...restOptions } = options || {};
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => deleteBookApi(id),
+    onSuccess: (...data) => {
+      queryClient.invalidateQueries({ queryKey: ["bookList"] });
+      onSuccess?.(...data);
+    },
+    ...restOptions,
   });
 };

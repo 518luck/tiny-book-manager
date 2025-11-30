@@ -68,3 +68,11 @@ export interface GetBookResponse extends ErrorResponse {
 export const getBookApi = (id: string): Promise<GetBookResponse> => {
   return service.get(`/book/${id}`);
 };
+
+// 删除书籍API
+export interface DeleteBookResponse extends ErrorResponse {
+  id: string;
+}
+export const deleteBookApi = (id: string): Promise<DeleteBookResponse> => {
+  return service.delete(`/book/delete/${id}`);
+};

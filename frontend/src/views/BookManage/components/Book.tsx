@@ -1,11 +1,15 @@
 import ColorThief from "colorthief";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
+import { useDeleteBookMutation } from "@/apis/hooks/books";
 import type { CreateBookResponse } from "@/apis/https/books";
 import { Button } from "@/components/ui/button";
 import Modal from "@/views/BookManage/components/Modal";
 const { VITE_API_BASE_URL } = import.meta.env;
+
 const Book = ({ book }: { book: CreateBookResponse }) => {
+  console.log("🚀 ~ Book ~ book:", book);
   const imgRef = useRef<HTMLImageElement>(null);
   const [bgColor, setBgColor] = useState("transparent");
   const [textColor, setTextColor] = useState("");
@@ -41,6 +45,16 @@ const Book = ({ book }: { book: CreateBookResponse }) => {
       img.removeEventListener("load", handleLoad);
     };
   }, []);
+
+  //删除书籍API
+  const { mutateAsync: deleteBookMutateAsync } = useDeleteBookMutation({
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "删除失败");
+    },
+    onSuccess: () => {
+      toast.success("删除成功");
+    },
+  });
   return (
     <>
       <div
@@ -72,6 +86,9 @@ const Book = ({ book }: { book: CreateBookResponse }) => {
           <Button
             className="h-4 w-8 rounded-[4px] hover:bg-[#da0a0a]"
             variant="destructive"
+            onClick={async () => {
+              await deleteBookMutateAsync(book.id);
+            }}
           >
             删除
           </Button>
