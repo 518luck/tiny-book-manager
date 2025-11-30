@@ -1,4 +1,7 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,13 +18,37 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+
+import type { CreateBookSchemaType } from "../schemas/create-book-schemas";
+import { createBookSchema } from "../schemas/create-book-schemas";
 interface ModalProps {
   open: boolean;
   onClose: () => void;
 }
 
 const Modal = ({ open, onClose }: ModalProps) => {
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateBookSchemaType>({
+    resolver: zodResolver(createBookSchema),
+    defaultValues: {
+      name: "",
+      author: "",
+      description: "",
+      cover: undefined as File | undefined,
+    },
+  });
   const { VITE_API_BASE_URL } = import.meta.env;
+  const [coverPreview, setCoverPreview] = useState<string | undefined>(
+    undefined,
+  );
+
+  const onSubmit = async (data: CreateBookSchemaType) => {
+    console.log(data);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -32,28 +59,58 @@ const Modal = ({ open, onClose }: ModalProps) => {
         <DialogHeader>
           <DialogTitle>新增书籍</DialogTitle>
 
-          <form className="mt-5 flex w-full flex-col items-start justify-center gap-5">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="mt-5 flex w-full flex-col items-start justify-center gap-5"
+          >
             <div className="flex items-center justify-start gap-10">
               <label htmlFor="book-name">书籍名称</label>
-              <Input
-                id="book-name"
-                className="w-50"
-                placeholder="请输入书籍名称"
-              />
+              <div>
+                <Input
+                  id="book-name"
+                  className="w-50"
+                  placeholder="请输入书籍名称"
+                  {...register("name")}
+                />
+                {errors.name && (
+                  <div className="text-sm text-red-500">
+                    {errors.name.message}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center justify-start gap-10">
               <label htmlFor="book-author">书籍作者</label>
-              <Input
-                id="book-author"
-                className="w-50"
-                placeholder="请输入书籍作者"
-              />
+              <div>
+                <Input
+                  id="book-author"
+                  className="w-50"
+                  placeholder="请输入书籍作者"
+                  {...register("author")}
+                />
+                {errors.author && (
+                  <div className="text-sm text-red-500">
+                    {errors.author.message}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center justify-start gap-10">
               <label>书籍描述</label>
-              <Textarea className="w-50" placeholder="请输入书籍作者" />
+              <div>
+                <Textarea
+                  className="w-50"
+                  placeholder="请输入书籍描述"
+                  {...register("description")}
+                />
+                {errors.description && (
+                  <div className="text-sm text-red-500">
+                    {errors.description.message}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center justify-start gap-10">
@@ -68,22 +125,48 @@ const Modal = ({ open, onClose }: ModalProps) => {
             <div className="flex items-center justify-start gap-10">
               <div>上传封面</div>
               <div>
-                <Input
-                  id="book-cover"
-                  type="file"
-                  className="hidden"
-                  placeholder="请上传封面"
-                />
-                <label
-                  htmlFor="book-cover"
-                  className="flex h-30 w-50 items-center justify-center rounded-md border border-solid border-white"
-                >
-                  <Plus size={24} />
-                </label>
+                <div>
+                  <Input
+                    id="book-cover"
+                    type="file"
+                    className="hidden"
+                    placeholder="请上传封面"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setValue("cover", file, { shouldValidate: true });
+
+                        const url = URL.createObjectURL(file);
+                        setCoverPreview(url);
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor="book-cover"
+                    className="flex h-30 w-50 cursor-pointer items-center justify-center rounded-md border border-solid border-white"
+                  >
+                    {coverPreview ? (
+                      <img
+                        src={coverPreview}
+                        alt="封面预览"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <Plus size={24} />
+                    )}
+                  </label>
+                </div>
+                {errors.cover && (
+                  <div className="text-sm text-red-500">
+                    {errors.cover.message}
+                  </div>
+                )}
               </div>
             </div>
 
-            <Button className="w-77">新增</Button>
+            <Button type="submit" className="w-77">
+              新增
+            </Button>
           </form>
         </DialogHeader>
 
