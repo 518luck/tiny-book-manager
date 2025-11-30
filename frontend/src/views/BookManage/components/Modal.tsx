@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import {
   useCreateBookMutation,
+  useGetBookQuery,
   useUpdateBookMutation,
   useUploadImageMutation,
 } from "@/apis/hooks/books";
@@ -37,6 +38,7 @@ const Modal = ({ open, onClose, id }: ModalProps) => {
     setValue,
     handleSubmit,
     getValues,
+    watch,
     formState: { errors },
   } = useForm<CreateBookSchemaType>({
     resolver: zodResolver(createBookSchema),
@@ -48,9 +50,8 @@ const Modal = ({ open, onClose, id }: ModalProps) => {
     },
   });
   const { VITE_API_BASE_URL } = import.meta.env;
-  const [coverPreview, setCoverPreview] = useState<string | undefined>(
-    undefined,
-  );
+
+  const coverValue = watch("cover");
 
   //创建书籍
   const { mutateAsync: createBookMutateAsync } = useCreateBookMutation({
@@ -74,6 +75,21 @@ const Modal = ({ open, onClose, id }: ModalProps) => {
     },
   });
 
+  //获取单本书籍API
+  const { data: bookData } = useGetBookQuery(id || "", {
+    enabled: !!id,
+  });
+  console.log("🚀 ~ Modal ~ bookData:", bookData);
+  // 初始化表单值
+  useEffect(() => {
+    if (bookData) {
+      setValue("name", bookData.name);
+      setValue("author", bookData.author);
+      setValue("description", bookData.description);
+      setValue("cover", bookData.cover);
+    }
+  }, [bookData, setValue]);
+
   //上传图片
   const { mutateAsync: uploadImageMutateAsync } = useUploadImageMutation({
     onError: () => {
@@ -84,7 +100,6 @@ const Modal = ({ open, onClose, id }: ModalProps) => {
       if (typeof data === "string") {
         const url = data.replace(/\\/g, "/");
         setValue("cover", url);
-        setCoverPreview(url);
       }
     },
   });
@@ -164,7 +179,7 @@ const Modal = ({ open, onClose, id }: ModalProps) => {
             <div className="flex items-center justify-start gap-10">
               <label>书籍封面</label>
               <img
-                src={`${VITE_API_BASE_URL}/uploads/1764037520489-370086747-%E5%A4%B4%E5%83%8F.png`}
+                src={`${VITE_API_BASE_URL}/${bookData?.cover}`}
                 alt="book"
                 className="h-20 w-15 object-cover"
               />
@@ -190,9 +205,9 @@ const Modal = ({ open, onClose, id }: ModalProps) => {
                   htmlFor="book-cover"
                   className="flex h-30 w-50 cursor-pointer items-center justify-center rounded-md border border-solid border-white"
                 >
-                  {coverPreview ? (
+                  {coverValue ? (
                     <img
-                      src={`${VITE_API_BASE_URL}/${coverPreview}`}
+                      src={`${VITE_API_BASE_URL}/${coverValue}`}
                       alt="封面预览"
                       className="h-full w-full object-cover"
                     />

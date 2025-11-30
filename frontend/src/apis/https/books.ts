@@ -54,5 +54,17 @@ export interface UpdateBookResponse extends ErrorResponse {
 export const updateBookApi = (
   data: UpdateBookRequest,
 ): Promise<UpdateBookResponse> => {
-  return service.post("/book/update", data);
+  return service.put("/book/update", data);
+};
+
+// 获取单本书籍API
+export interface GetBookResponse extends ErrorResponse {
+  id: string;
+  name: string;
+  author: string;
+  description: string;
+  cover: string;
+}
+export const getBookApi = (id: string): Promise<GetBookResponse> => {
+  return service.get(`/book/${id}`);
 };

@@ -3,6 +3,8 @@ import {
   type UseMutationOptions,
   type UseMutationResult,
   useQuery,
+  useQueryClient,
+  type UseQueryOptions,
 } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 
@@ -10,7 +12,9 @@ import {
   createBookApi,
   type CreateBookRequest,
   type CreateBookResponse,
+  getBookApi,
   getBookListApi,
+  type GetBookResponse,
   updateBookApi,
   type UpdateBookRequest,
   type UpdateBookResponse,
@@ -30,9 +34,14 @@ export const useCreateBookMutation = (
   AxiosError<CreateBookResponse>,
   CreateBookRequest
 > => {
-  const { ...restOptions } = options || {};
+  const { onSuccess, ...restOptions } = options || {};
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data) => createBookApi(data),
+    onSuccess: (...data) => {
+      queryClient.invalidateQueries({ queryKey: ["bookList"] });
+      onSuccess?.(...data);
+    },
     ...restOptions,
   });
 };
@@ -76,9 +85,28 @@ export const useUpdateBookMutation = (
   AxiosError<UpdateBookResponse>,
   UpdateBookRequest
 > => {
-  const { ...restOptions } = options || {};
+  const { onSuccess, ...restOptions } = options || {};
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data) => updateBookApi(data),
+    onSuccess: (...data) => {
+      queryClient.invalidateQueries({ queryKey: ["bookList"] });
+      onSuccess?.(...data);
+    },
     ...restOptions,
+  });
+};
+
+// 获取单本书籍API
+export const useGetBookQuery = (
+  id: string,
+  options?: Partial<
+    UseQueryOptions<GetBookResponse, AxiosError<GetBookResponse>>
+  >,
+) => {
+  return useQuery({
+    queryKey: ["book", id],
+    queryFn: () => getBookApi(id),
+    ...options,
   });
 };

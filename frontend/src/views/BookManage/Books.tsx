@@ -31,7 +31,7 @@ const Books = () => {
           <Book key={book.id} book={book} />
         ))}
       </section>
-      <Modal open={isOpen} onClose={onClose} />
+      {isOpen && <Modal open={isOpen} onClose={onClose} />}
     </div>
   );
 };

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import Modal from "@/views/BookManage/components/Modal";
 const { VITE_API_BASE_URL } = import.meta.env;
 const Book = ({ book }: { book: CreateBookResponse }) => {
-  console.log("🚀 ~ Book ~ book:", book);
   const imgRef = useRef<HTMLImageElement>(null);
   const [bgColor, setBgColor] = useState("transparent");
   const [textColor, setTextColor] = useState("");
@@ -78,11 +77,9 @@ const Book = ({ book }: { book: CreateBookResponse }) => {
           </Button>
         </section>
       </div>
-      <Modal
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        id={book.id}
-      />
+      {isModalOpen && (
+        <Modal open={true} onClose={() => setIsModalOpen(false)} id={book.id} />
+      )}
     </>
   );
 };
