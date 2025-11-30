@@ -25,12 +25,19 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
 }
+import { toast } from "sonner";
+
+import {
+  useCreateBookMutation,
+  useUploadImageMutation,
+} from "@/apis/hooks/books";
 
 const Modal = ({ open, onClose }: ModalProps) => {
   const {
     register,
     setValue,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<CreateBookSchemaType>({
     resolver: zodResolver(createBookSchema),
@@ -38,16 +45,42 @@ const Modal = ({ open, onClose }: ModalProps) => {
       name: "",
       author: "",
       description: "",
-      cover: undefined as File | undefined,
+      cover: "",
     },
   });
   const { VITE_API_BASE_URL } = import.meta.env;
   const [coverPreview, setCoverPreview] = useState<string | undefined>(
     undefined,
   );
+  //创建书籍
+  const { mutateAsync: createBookMutateAsync } = useCreateBookMutation({
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "创建书籍失败");
+    },
+    onSuccess: () => {
+      toast.success("创建书籍成功");
+      onClose();
+    },
+  });
+  //上传图片
+  const { mutateAsync: uploadImageMutateAsync } = useUploadImageMutation({
+    onError: () => {
+      // toast.error(error.response?.data?.message || "上传图片失败");
+    },
+    onSuccess: (data) => {
+      toast.success("上传图片成功");
+      if (typeof data === "string") {
+        const url = data.replace(/\\/g, "/");
+        setValue("cover", url);
+        setCoverPreview(url);
+      }
+    },
+  });
 
-  const onSubmit = async (data: CreateBookSchemaType) => {
-    console.log(data);
+  const onSubmit = async () => {
+    const newData = getValues();
+    console.log("🚀 ~ onSubmit ~ newData:", newData);
+    await createBookMutateAsync(newData);
   };
 
   return (
@@ -58,125 +91,112 @@ const Modal = ({ open, onClose }: ModalProps) => {
       <DialogContent className="border border-[#333333] bg-[#333333] text-white">
         <DialogHeader>
           <DialogTitle>新增书籍</DialogTitle>
-
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="mt-5 flex w-full flex-col items-start justify-center gap-5"
-          >
-            <div className="flex items-center justify-start gap-10">
-              <label htmlFor="book-name">书籍名称</label>
-              <div>
-                <Input
-                  id="book-name"
-                  className="w-50"
-                  placeholder="请输入书籍名称"
-                  {...register("name")}
-                />
-                {errors.name && (
-                  <div className="text-sm text-red-500">
-                    {errors.name.message}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-start gap-10">
-              <label htmlFor="book-author">书籍作者</label>
-              <div>
-                <Input
-                  id="book-author"
-                  className="w-50"
-                  placeholder="请输入书籍作者"
-                  {...register("author")}
-                />
-                {errors.author && (
-                  <div className="text-sm text-red-500">
-                    {errors.author.message}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-start gap-10">
-              <label>书籍描述</label>
-              <div>
-                <Textarea
-                  className="w-50"
-                  placeholder="请输入书籍描述"
-                  {...register("description")}
-                />
-                {errors.description && (
-                  <div className="text-sm text-red-500">
-                    {errors.description.message}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-start gap-10">
-              <label>书籍封面</label>
-              <img
-                src={`${VITE_API_BASE_URL}/uploads/1764037520489-370086747-%E5%A4%B4%E5%83%8F.png`}
-                alt="book"
-                className="h-20 w-15 object-cover"
-              />
-            </div>
-
-            <div className="flex items-center justify-start gap-10">
-              <div>上传封面</div>
-              <div>
-                <div>
-                  <Input
-                    id="book-cover"
-                    type="file"
-                    className="hidden"
-                    placeholder="请上传封面"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setValue("cover", file, { shouldValidate: true });
-
-                        const url = URL.createObjectURL(file);
-                        setCoverPreview(url);
-                      }
-                    }}
-                  />
-                  <label
-                    htmlFor="book-cover"
-                    className="flex h-30 w-50 cursor-pointer items-center justify-center rounded-md border border-solid border-white"
-                  >
-                    {coverPreview ? (
-                      <img
-                        src={coverPreview}
-                        alt="封面预览"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <Plus size={24} />
-                    )}
-                  </label>
-                </div>
-                {errors.cover && (
-                  <div className="text-sm text-red-500">
-                    {errors.cover.message}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <Button type="submit" className="w-77">
-              新增
-            </Button>
-          </form>
         </DialogHeader>
-
-        {/* 底部按钮 */}
-        <DialogFooter>
-          <Button className="text-white" variant="link" onClick={onClose}>
-            取消
-          </Button>
-          <Button>确认</Button>
-        </DialogFooter>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-5 flex w-full flex-col items-start justify-center gap-5"
+        >
+          <div className="flex items-center justify-start gap-10">
+            <label htmlFor="book-name">书籍名称</label>
+            <div>
+              <Input
+                id="book-name"
+                className="w-50"
+                placeholder="请输入书籍名称"
+                {...register("name")}
+              />
+              {errors.name && (
+                <div className="text-sm text-red-500">
+                  {errors.name.message}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-start gap-10">
+            <label htmlFor="book-author">书籍作者</label>
+            <div>
+              <Input
+                id="book-author"
+                className="w-50"
+                placeholder="请输入书籍作者"
+                {...register("author")}
+              />
+              {errors.author && (
+                <div className="text-sm text-red-500">
+                  {errors.author.message}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-start gap-10">
+            <label>书籍描述</label>
+            <div>
+              <Textarea
+                className="w-50"
+                placeholder="请输入书籍描述"
+                {...register("description")}
+              />
+              {errors.description && (
+                <div className="text-sm text-red-500">
+                  {errors.description.message}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-start gap-10">
+            <label>书籍封面</label>
+            <img
+              src={`${VITE_API_BASE_URL}/uploads/1764037520489-370086747-%E5%A4%B4%E5%83%8F.png`}
+              alt="book"
+              className="h-20 w-15 object-cover"
+            />
+          </div>
+          <div className="flex items-center justify-start gap-10">
+            <div>上传封面</div>
+            <div>
+              <div>
+                <Input
+                  id="book-cover"
+                  type="file"
+                  className="hidden"
+                  placeholder="请上传封面"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      await uploadImageMutateAsync(file);
+                    }
+                  }}
+                />
+                <label
+                  htmlFor="book-cover"
+                  className="flex h-30 w-50 cursor-pointer items-center justify-center rounded-md border border-solid border-white"
+                >
+                  {coverPreview ? (
+                    <img
+                      src={`${VITE_API_BASE_URL}/${coverPreview}`}
+                      alt="封面预览"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <Plus size={24} />
+                  )}
+                </label>
+              </div>
+              {errors.cover && (
+                <div className="text-sm text-red-500">
+                  {errors.cover.message}
+                </div>
+              )}
+            </div>
+          </div>
+          {/* 底部按钮 */}
+          <DialogFooter className="flex w-full justify-end gap-5">
+            <Button className="text-white" variant="link" onClick={onClose}>
+              取消
+            </Button>
+            <Button type="submit">确认</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

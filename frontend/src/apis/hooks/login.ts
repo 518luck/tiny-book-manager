@@ -13,7 +13,7 @@ import {
   type RegisterRequest,
   type RegisterResponse,
 } from "@/apis/https/login";
-
+// 登录API
 export const useLoginMutation = (
   options?: UseMutationOptions<
     LoginResponse,
@@ -31,7 +31,7 @@ export const useLoginMutation = (
     ...restOptions,
   });
 };
-
+// 注册API
 export const useRegisterMutation = (
   options?: UseMutationOptions<
     RegisterResponse,

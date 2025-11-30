@@ -68,5 +68,26 @@
     "author": "J.K. 罗琳",
     "description": "系列第一部，开启了魔法世界的大门。",
     "cover": "https://via.placeholder.com/1300x1000/F4A460/000000.jpg"
+  },
+  {
+    "id": "1cdb0c06-8329-40f2-9ee6-7ba7a21ce4b8",
+    "name": "沟通的学问1",
+    "author": "晓啸",
+    "description": "较单每度用产在技。",
+    "cover": "https://via.placeholder.com/954x1248/205f95/5d029c.jpeg"
+  },
+  {
+    "id": "8b2e1394-b8f7-43da-aa6e-094bb2f60984",
+    "name": "张清博",
+    "author": "22",
+    "description": "123123213",
+    "cover": {}
+  },
+  {
+    "id": "e926eb1a-7d70-42df-8468-38c742f54f51",
+    "name": "123123",
+    "author": "123",
+    "description": "123",
+    "cover": "uploads/1764495287936-700690892-59adcdc0ff9e1f3e8a84902d77cbb1a.jpg"
   }
 ]
