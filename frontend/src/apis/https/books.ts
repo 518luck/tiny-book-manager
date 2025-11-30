@@ -29,3 +29,9 @@ export const uploadImageApi = (data: File): Promise<ErrorResponse | string> => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
+
+// 获取书籍列表API
+export type GetBookListResponse = ErrorResponse & CreateBookResponse[];
+export const getBookListApi = (): Promise<GetBookListResponse> => {
+  return service.get("/book/list");
+};

@@ -2,6 +2,7 @@ import {
   useMutation,
   type UseMutationOptions,
   type UseMutationResult,
+  useQuery,
 } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 
@@ -9,6 +10,7 @@ import {
   createBookApi,
   type CreateBookRequest,
   type CreateBookResponse,
+  getBookListApi,
   uploadImageApi,
 } from "@/apis/https/books";
 import { type ErrorResponse } from "@/types/errorResponse";
@@ -48,5 +50,14 @@ export const useUploadImageMutation = (
   return useMutation({
     mutationFn: (data) => uploadImageApi(data),
     ...restOptions,
+  });
+};
+// 获取书籍列表API
+
+export const useGetBookListMutation = (options = {}) => {
+  return useQuery({
+    queryKey: ["bookList"],
+    queryFn: () => getBookListApi(),
+    ...options,
   });
 };

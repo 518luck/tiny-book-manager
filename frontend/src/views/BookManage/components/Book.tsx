@@ -1,10 +1,12 @@
 import ColorThief from "colorthief";
 import { useEffect, useRef, useState } from "react";
 
+import type { CreateBookResponse } from "@/apis/https/books";
 import { Button } from "@/components/ui/button";
 import Modal from "@/views/BookManage/components/Modal";
 const { VITE_API_BASE_URL } = import.meta.env;
-const Book = () => {
+const Book = ({ book }: { book: CreateBookResponse }) => {
+  console.log("🚀 ~ Book ~ book:", book);
   const imgRef = useRef<HTMLImageElement>(null);
   const [bgColor, setBgColor] = useState("transparent");
   const [textColor, setTextColor] = useState("");
@@ -49,16 +51,16 @@ const Book = () => {
         <section className="min-h-0 w-full flex-1">
           <img
             ref={imgRef}
-            src={`${VITE_API_BASE_URL}/uploads/1764037520489-370086747-%E5%A4%B4%E5%83%8F.png`}
+            src={`${VITE_API_BASE_URL}/${book.cover}`}
             alt="book"
             className="h-full w-full object-cover"
             crossOrigin="anonymous"
           />
         </section>
         <section className="w-full p-1 text-xs">
-          <div>red and black</div>
+          <div className="truncate">{book?.description}</div>
           <div className="flex w-full items-center justify-end">
-            <div>作者 : luck</div>
+            <div>作者 : {book.author}</div>
           </div>
         </section>
         <section className="flex items-center justify-between p-1 text-xs">
