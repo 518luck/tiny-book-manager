@@ -1,3 +1,5 @@
+import { Plus } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog, //根容器，包裹整个弹窗逻辑，相当于 Modal
@@ -22,7 +24,7 @@ const Modal = ({ open, onClose }: ModalProps) => {
   const { VITE_API_BASE_URL } = import.meta.env;
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onClose}>
       {/* 打开弹窗的按钮 */}
 
       {/* 弹窗内容 */}
@@ -32,13 +34,21 @@ const Modal = ({ open, onClose }: ModalProps) => {
 
           <form className="mt-5 flex w-full flex-col items-start justify-center gap-5">
             <div className="flex items-center justify-start gap-10">
-              <label>书籍名称</label>
-              <Input className="w-50" placeholder="请输入书籍名称" />
+              <label htmlFor="book-name">书籍名称</label>
+              <Input
+                id="book-name"
+                className="w-50"
+                placeholder="请输入书籍名称"
+              />
             </div>
 
             <div className="flex items-center justify-start gap-10">
-              <label>书籍作者</label>
-              <Input className="w-50" placeholder="请输入书籍作者" />
+              <label htmlFor="book-author">书籍作者</label>
+              <Input
+                id="book-author"
+                className="w-50"
+                placeholder="请输入书籍作者"
+              />
             </div>
 
             <div className="flex items-center justify-start gap-10">
@@ -56,12 +66,21 @@ const Modal = ({ open, onClose }: ModalProps) => {
             </div>
 
             <div className="flex items-center justify-start gap-10">
-              <label>上传封面</label>
-              <Input
-                type="file"
-                className="h-30 w-50"
-                placeholder="请上传封面"
-              />
+              <div>上传封面</div>
+              <div>
+                <Input
+                  id="book-cover"
+                  type="file"
+                  className="hidden"
+                  placeholder="请上传封面"
+                />
+                <label
+                  htmlFor="book-cover"
+                  className="flex h-30 w-50 items-center justify-center rounded-md border border-solid border-white"
+                >
+                  <Plus size={24} />
+                </label>
+              </div>
             </div>
 
             <Button className="w-77">新增</Button>
